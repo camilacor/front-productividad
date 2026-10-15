@@ -1,0 +1,73 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: #1e293b;
+  color: white;
+
+  .brand {
+    font-weight: 600;
+  }
+
+  .user {
+    margin-left: auto;
+    font-size: 0.875rem;
+    opacity: 0.85;
+  }
+
+  .logout {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.body {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  padding: 1rem 0;
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+
+  a {
+    padding: 0.6rem 1.25rem;
+    color: #334155;
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    &:hover {
+      background: #eef2f7;
+    }
+
+    &.active {
+      background: #e0e7ff;
+      color: #2563eb;
+      font-weight: 600;
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  padding: 1.5rem;
+}

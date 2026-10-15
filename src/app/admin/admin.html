@@ -1,0 +1,11 @@
+<h2>Administración</h2>
+<p class="hint">Estas secciones todavía no tienen backend — se arman cuando lleguen esos módulos.</p>
+
+<div class="cards">
+  @for (section of sections; track section.label) {
+    <div class="card">
+      <h3>{{ section.label }}</h3>
+      <p>{{ section.description }}</p>
+    </div>
+  }
+</div>
