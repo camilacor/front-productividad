@@ -23,7 +23,7 @@
       <label>
         Proceso
         <select formControlName="procesoId">
-          <option [ngValue]="null">Seleccioná un proceso</option>
+          <option [ngValue]="null">Seleccione un proceso</option>
           @for (proceso of procesosActivos(); track proceso.id) {
             <option [ngValue]="proceso.id">{{ proceso.nombre }}</option>
           }
@@ -48,7 +48,7 @@
 
   <div class="filtros">
     <select (change)="onProcesoRendimientoChange($event)">
-      <option value="">Seleccioná un proceso</option>
+      <option value="">Seleccione un proceso</option>
       @for (proceso of procesos(); track proceso.id) {
         <option [value]="proceso.id">{{ proceso.nombre }}</option>
       }

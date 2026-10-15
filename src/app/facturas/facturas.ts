@@ -106,7 +106,7 @@ export class Facturas {
   consultarRendimiento(): void {
     const procesoId = this.procesoRendimientoId();
     if (!procesoId) {
-      this.errorRendimiento.set('Elegí un proceso primero.');
+      this.errorRendimiento.set('Seleccione un proceso primero.');
       return;
     }
     this.errorRendimiento.set(null);
