@@ -4,12 +4,7 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import {
-  provideHttpClient,
-  withFetch,
-  withInterceptors,
-  withXsrfConfiguration,
-} from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { routes } from './app.routes';
@@ -20,13 +15,10 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([credentialsInterceptor]),
-      // Nombres explícitos aunque coinciden con los defaults de Angular: son justo los que
-      // espera CookieCsrfTokenRepository.withHttpOnlyFalse() del backend (ver docs/seguridad.md).
-      withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }),
-    ),
+    // El soporte CSRF integrado de Angular (withXsrfConfiguration) solo adjunta el header en URLs
+    // relativas — no sirve acá porque environment.apiUrl es absoluta (otro origen a propósito).
+    // credentialsInterceptor hace ese trabajo a mano, ver sus comentarios.
+    provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor])),
     // Al arrancar la app: calienta la cookie CSRF y, si ya hay una sesión válida (cookie
     // access_token todavía vigente), restaura el usuario — necesario tras un refresh de página,
     // ya que el JWT no es legible desde JS.
