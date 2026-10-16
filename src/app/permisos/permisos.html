@@ -1,2 +1,138 @@
 <h2>Permisos</h2>
-<p>Módulo en construcción — solicitud por días, pagos/no pagos, y aprobación en dos pasos (jefe inmediato → Dirección).</p>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+<section class="card">
+  <h3>Solicitar permiso</h3>
+  <form [formGroup]="form" (ngSubmit)="solicitar()">
+    <label>
+      Desde
+      <input type="date" formControlName="fechaInicio" />
+      @if (form.controls.fechaInicio.invalid && form.controls.fechaInicio.touched) {
+        <span class="campo-error">La fecha de inicio es obligatoria.</span>
+      }
+    </label>
+
+    <label>
+      Hasta
+      <input type="date" formControlName="fechaFin" />
+      @if (form.controls.fechaFin.invalid && form.controls.fechaFin.touched) {
+        <span class="campo-error">La fecha de fin es obligatoria.</span>
+      }
+    </label>
+
+    <label class="checkbox">
+      <input type="checkbox" formControlName="pagado" />
+      Pagado
+    </label>
+
+    <label>
+      Motivo
+      <input type="text" formControlName="motivo" />
+    </label>
+
+    <button type="submit" [disabled]="cargando()">Solicitar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>Mis solicitudes</h3>
+  @if (misSolicitudes().length === 0) {
+    <p class="hint">Todavía no solicitaste ningún permiso.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Desde</th>
+          <th>Hasta</th>
+          <th>Pagado</th>
+          <th>Motivo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of misSolicitudes(); track p.id) {
+          <tr>
+            <td>{{ p.fechaInicio }}</td>
+            <td>{{ p.fechaFin }}</td>
+            <td>{{ p.pagado ? 'Sí' : 'No' }}</td>
+            <td>{{ p.motivo || '—' }}</td>
+            <td>{{ estadoLabel(p.estado) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>
+
+@if (esJefe()) {
+  <section class="card">
+    <h3>Pendientes de mi equipo</h3>
+    @if (pendientesJefe().length === 0) {
+      <p class="hint">No hay solicitudes pendientes.</p>
+    } @else {
+      @for (p of pendientesJefe(); track p.id) {
+        <div class="solicitud">
+          <p>
+            <strong>{{ p.usuarioNombre }}</strong> — {{ p.fechaInicio }} a {{ p.fechaFin }}
+            ({{ p.pagado ? 'pagado' : 'no pagado' }})
+          </p>
+          @if (p.motivo) {
+            <p class="motivo">{{ p.motivo }}</p>
+          }
+          <input
+            type="text"
+            placeholder="Comentario (opcional)"
+            [value]="comentario(p.id)"
+            (input)="onComentarioChange(p.id, $event)"
+          />
+          <div class="acciones">
+            <button type="button" class="aprobar" (click)="aprobarJefe(p.id)">Aprobar</button>
+            <button type="button" class="rechazar" (click)="rechazarJefe(p.id)">Rechazar</button>
+          </div>
+        </div>
+      }
+    }
+  </section>
+}
+
+@if (esDireccion()) {
+  <section class="card">
+    <h3>Pendientes de aprobación final</h3>
+    @if (pendientesDireccion().length === 0) {
+      <p class="hint">No hay solicitudes pendientes.</p>
+    } @else {
+      @for (p of pendientesDireccion(); track p.id) {
+        <div class="solicitud">
+          <p>
+            <strong>{{ p.usuarioNombre }}</strong> — {{ p.fechaInicio }} a {{ p.fechaFin }}
+            ({{ p.pagado ? 'pagado' : 'no pagado' }})
+          </p>
+          @if (p.motivo) {
+            <p class="motivo">{{ p.motivo }}</p>
+          }
+          <p class="hint">Jefe inmediato: {{ p.aprobadorJefeNombre }} — "{{ p.comentarioJefe || 'sin comentario' }}"</p>
+          <input
+            type="text"
+            placeholder="Comentario (opcional)"
+            [value]="comentario(p.id)"
+            (input)="onComentarioChange(p.id, $event)"
+          />
+          <div class="acciones">
+            <button type="button" class="aprobar" (click)="aprobarDireccion(p.id)">Aprobar</button>
+            <button type="button" class="rechazar" (click)="rechazarDireccion(p.id)">Rechazar</button>
+          </div>
+        </div>
+      }
+    }
+  </section>
+}
+
+@if (puedeExportar()) {
+  <section class="card">
+    <h3>Exportar</h3>
+    <a [href]="exportarUrl" target="_blank" class="boton-exportar">Descargar CSV</a>
+  </section>
+}

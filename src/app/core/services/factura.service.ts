@@ -2,12 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { CasoFactura, RendimientoProceso, TipoGeneracion } from '../models/caso-factura.model';
+import { CasoFactura, RendimientoProceso } from '../models/caso-factura.model';
 
 export interface IniciarCasoRequest {
   numeroFactura: string;
   procesoId: number;
-  tipoGeneracion: TipoGeneracion;
 }
 
 /** Espeja com.productividad.factura.FacturaController del backend. */

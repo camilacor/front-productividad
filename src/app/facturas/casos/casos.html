@@ -2,7 +2,9 @@
   <p class="error">{{ error() }}</p>
 }
 
-@if (enCurso(); as caso) {
+@if (cargandoInicial()) {
+  <p>Cargando…</p>
+} @else if (enCurso(); as caso) {
   <section class="card">
     <h3>Caso en curso</h3>
     <p><strong>{{ caso.numeroFactura }}</strong> — {{ caso.procesoNombre }}</p>
@@ -32,14 +34,6 @@
         @if (form.controls.procesoId.invalid && form.controls.procesoId.touched) {
           <span class="campo-error">Debe seleccionar un proceso.</span>
         }
-      </label>
-
-      <label>
-        Tipo de generación
-        <select formControlName="tipoGeneracion">
-          <option value="MANUAL">Manual</option>
-          <option value="AUTOMATICA">Automática</option>
-        </select>
       </label>
 
       <button type="submit" [disabled]="cargando()">Iniciar</button>
