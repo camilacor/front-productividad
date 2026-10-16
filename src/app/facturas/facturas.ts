@@ -41,7 +41,9 @@ export class Facturas {
   });
 
   readonly form = this.fb.nonNullable.group({
-    numeroFactura: ['', Validators.required],
+    // Validators.required por sí solo no rechaza un valor de solo espacios — Validators.pattern
+    // con \S exige al menos un caracter que no sea espacio.
+    numeroFactura: ['', [Validators.required, Validators.pattern(/\S/)]],
     procesoId: this.fb.control<number | null>(null, Validators.required),
     tipoGeneracion: this.fb.nonNullable.control<TipoGeneracion>('MANUAL', Validators.required),
   });

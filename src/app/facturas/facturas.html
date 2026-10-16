@@ -18,6 +18,9 @@
       <label>
         N° de factura
         <input type="text" formControlName="numeroFactura" />
+        @if (form.controls.numeroFactura.invalid && form.controls.numeroFactura.touched) {
+          <span class="campo-error">El número de factura es obligatorio.</span>
+        }
       </label>
 
       <label>
@@ -28,6 +31,9 @@
             <option [ngValue]="proceso.id">{{ proceso.nombre }}</option>
           }
         </select>
+        @if (form.controls.procesoId.invalid && form.controls.procesoId.touched) {
+          <span class="campo-error">Debe seleccionar un proceso.</span>
+        }
       </label>
 
       <label>
