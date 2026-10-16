@@ -12,17 +12,21 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
+// SUPERVISOR es de solo lectura (ver role.guard y SecurityConfig del backend): no gestiona casos
+// de factura ni permisos, solo ve Productividad.
+const ROLES_NO_SUPERVISOR: Rol[] = ['EMPLEADO', 'JEFE_INMEDIATO', 'DIRECCION', 'ADMIN'];
+
 const MENU_ITEMS: MenuItem[] = [
   { label: 'Inicio', path: '' },
   {
     label: 'Facturas',
     path: 'facturas',
     children: [
-      { label: 'Casos', path: 'facturas' },
+      { label: 'Casos', path: 'facturas', roles: ROLES_NO_SUPERVISOR },
       { label: 'Productividad', path: 'facturas/productividad' },
     ],
   },
-  { label: 'Permisos', path: 'permisos' },
+  { label: 'Permisos', path: 'permisos', roles: ROLES_NO_SUPERVISOR },
   {
     label: 'Administración',
     path: 'admin',

@@ -5,7 +5,7 @@ import { Rol, Usuario } from '../../core/models/usuario.model';
 import { EquipoService } from '../../core/services/equipo.service';
 import { UsuarioAdminService } from '../../core/services/usuario-admin.service';
 
-const ROLES: Rol[] = ['EMPLEADO', 'JEFE_INMEDIATO', 'DIRECCION', 'ADMIN'];
+const ROLES: Rol[] = ['EMPLEADO', 'JEFE_INMEDIATO', 'DIRECCION', 'SUPERVISOR', 'ADMIN'];
 
 /** Alta y gestión de usuarios — solo ADMIN (ver role.guard y app.routes). */
 @Component({

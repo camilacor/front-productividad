@@ -11,12 +11,21 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/layout').then((m) => m.Layout),
     children: [
       { path: '', loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard) },
-      { path: 'facturas', loadComponent: () => import('./facturas/casos/casos').then((m) => m.Casos) },
+      {
+        path: 'facturas',
+        // SUPERVISOR es de solo lectura: no inicia/finaliza casos, solo ve Productividad.
+        canActivate: [roleGuard('EMPLEADO', 'JEFE_INMEDIATO', 'DIRECCION', 'ADMIN')],
+        loadComponent: () => import('./facturas/casos/casos').then((m) => m.Casos),
+      },
       {
         path: 'facturas/productividad',
         loadComponent: () => import('./facturas/productividad/productividad').then((m) => m.Productividad),
       },
-      { path: 'permisos', loadComponent: () => import('./permisos/permisos').then((m) => m.Permisos) },
+      {
+        path: 'permisos',
+        canActivate: [roleGuard('EMPLEADO', 'JEFE_INMEDIATO', 'DIRECCION', 'ADMIN')],
+        loadComponent: () => import('./permisos/permisos').then((m) => m.Permisos),
+      },
       { path: 'admin', pathMatch: 'full', redirectTo: 'admin/usuarios' },
       {
         path: 'admin/usuarios',
