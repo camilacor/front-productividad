@@ -46,3 +46,47 @@
     </dl>
   }
 </section>
+
+@if (puedeVerPorEmpleado()) {
+  <section class="card ancho">
+    <div class="encabezado-empleados">
+      <h3>Por empleado</h3>
+      @if (exportarUrl(); as url) {
+        <a [href]="url" target="_blank" class="boton-exportar">Descargar Excel (día/semana/mes)</a>
+      }
+    </div>
+
+    @if (rendimientoPorEmpleado(); as r) {
+      @if (r.empleados.length === 0) {
+        <p class="hint">Nadie completó casos de este proceso en el período elegido.</p>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>Empleado</th>
+              <th>Casos completados</th>
+              <th>Tiempo promedio</th>
+              <th>Productividad real/hora</th>
+              <th>Cumplimiento</th>
+              <th>Horas extra necesarias</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (e of r.empleados; track e.usuarioId) {
+              <tr>
+                <td>{{ e.usuarioNombre }}</td>
+                <td>{{ e.casosCompletados }}</td>
+                <td>{{ e.tiempoPromedioSegundos !== null ? (e.tiempoPromedioSegundos | number: '1.0-0') + ' s' : '—' }}</td>
+                <td>{{ e.productividadRealPorHora !== null ? (e.productividadRealPorHora | number: '1.1-1') : '—' }}</td>
+                <td>{{ e.cumplimientoPct !== null ? (e.cumplimientoPct | number: '1.0-0') + '%' : '—' }}</td>
+                <td>{{ e.horasExtraNecesarias !== null ? (e.horasExtraNecesarias | number: '1.1-1') : '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    } @else {
+      <p class="hint">Elegí un proceso y tocá "Consultar" para ver el desglose por empleado.</p>
+    }
+  </section>
+}

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { CasoFactura, RendimientoProceso } from '../models/caso-factura.model';
+import { CasoFactura, RendimientoPorEmpleado, RendimientoProceso } from '../models/caso-factura.model';
 
 export interface IniciarCasoRequest {
   numeroFactura: string;
@@ -31,5 +31,21 @@ export class FacturaService {
     return this.http.get<RendimientoProceso>(`${environment.apiUrl}/facturas/rendimiento`, {
       params: { procesoId, desde, hasta },
     });
+  }
+
+  /** La "visual de todos los empleados" — restringido en el backend a roles != EMPLEADO. */
+  rendimientoPorEmpleado(procesoId: number, desde: string, hasta: string): Observable<RendimientoPorEmpleado> {
+    return this.http.get<RendimientoPorEmpleado>(`${environment.apiUrl}/facturas/rendimiento-por-empleado`, {
+      params: { procesoId, desde, hasta },
+    });
+  }
+
+  /**
+   * URL del .xlsx (Diaria/Semanal/Mensual) — se usa en un link de navegación de página completa,
+   * no por HttpClient: así la cookie de sesión viaja sola (SameSite=Lax) sin pelear con
+   * CORS/blobs solo para descargar un archivo (mismo patrón que la exportación CSV de permisos).
+   */
+  exportarRendimientoUrl(procesoId: number): string {
+    return `${environment.apiUrl}/facturas/rendimiento-por-empleado/exportar?procesoId=${procesoId}`;
   }
 }

@@ -1,7 +1,8 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
-import { RendimientoProceso } from '../../core/models/caso-factura.model';
+import { Component, computed, inject, signal } from '@angular/core';
+import { RendimientoPorEmpleado, RendimientoProceso } from '../../core/models/caso-factura.model';
 import { Proceso } from '../../core/models/proceso.model';
+import { AuthService } from '../../core/services/auth.service';
 import { FacturaService } from '../../core/services/factura.service';
 import { ProcesoService } from '../../core/services/proceso.service';
 
@@ -17,6 +18,7 @@ type Periodo = 'dia' | 'semana' | 'mes';
 export class Productividad {
   private readonly procesoService = inject(ProcesoService);
   private readonly facturaService = inject(FacturaService);
+  private readonly authService = inject(AuthService);
 
   readonly procesos = signal<Proceso[]>([]);
   readonly periodo = signal<Periodo>('dia');
@@ -25,6 +27,11 @@ export class Productividad {
   readonly cargando = signal(false);
   readonly error = signal<string | null>(null);
 
+  // La "visual de todos los empleados" — el backend ya la restringe a roles != EMPLEADO, acá solo
+  // evitamos pedirla (y mostrar una sección vacía) para alguien que de entrada no la puede ver.
+  readonly puedeVerPorEmpleado = computed(() => this.authService.usuario()?.rol !== 'EMPLEADO');
+  readonly rendimientoPorEmpleado = signal<RendimientoPorEmpleado | null>(null);
+
   constructor() {
     this.procesoService.listar().subscribe((procesos) => this.procesos.set(procesos));
   }
@@ -32,6 +39,11 @@ export class Productividad {
   onProcesoChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
     this.procesoSeleccionadoId.set(value ? Number(value) : null);
+  }
+
+  exportarUrl(): string | null {
+    const procesoId = this.procesoSeleccionadoId();
+    return procesoId ? this.facturaService.exportarRendimientoUrl(procesoId) : null;
   }
 
   consultar(): void {
@@ -54,6 +66,13 @@ export class Productividad {
         this.cargando.set(false);
       },
     });
+
+    if (this.puedeVerPorEmpleado()) {
+      this.facturaService.rendimientoPorEmpleado(procesoId, desde, hasta).subscribe({
+        next: (resultado) => this.rendimientoPorEmpleado.set(resultado),
+        error: () => this.rendimientoPorEmpleado.set(null),
+      });
+    }
   }
 
   private rangoPeriodo(periodo: Periodo): { desde: string; hasta: string } {

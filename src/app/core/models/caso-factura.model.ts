@@ -26,3 +26,24 @@ export interface RendimientoProceso {
   cumplimientoPct: number | null;
   horasExtraNecesarias: number | null;
 }
+
+/** Una fila del desglose por empleado — espejo de RendimientoEmpleadoResponse. */
+export interface RendimientoEmpleado {
+  usuarioId: number;
+  usuarioNombre: string;
+  casosCompletados: number;
+  tiempoPromedioSegundos: number | null;
+  productividadRealPorHora: number | null;
+  cumplimientoPct: number | null;
+  horasExtraNecesarias: number | null;
+}
+
+/** Espejo de RendimientoPorEmpleadoResponse — la "visual de todos los empleados". */
+export interface RendimientoPorEmpleado {
+  procesoId: number;
+  procesoNombre: string;
+  desde: string;
+  hasta: string;
+  ritmoEsperadoPorHora: number | null;
+  empleados: RendimientoEmpleado[];
+}
