@@ -1,0 +1,51 @@
+<h2>Productividad</h2>
+
+<section class="card">
+  <div class="filtros">
+    <select (change)="onProcesoChange($event)">
+      <option value="">Seleccione un proceso</option>
+      @for (proceso of procesos(); track proceso.id) {
+        <option [value]="proceso.id">{{ proceso.nombre }}</option>
+      }
+    </select>
+
+    <div class="periodo">
+      <button type="button" [class.active]="periodo() === 'dia'" (click)="periodo.set('dia')">Hoy</button>
+      <button type="button" [class.active]="periodo() === 'semana'" (click)="periodo.set('semana')">
+        Esta semana
+      </button>
+      <button type="button" [class.active]="periodo() === 'mes'" (click)="periodo.set('mes')">Este mes</button>
+    </div>
+
+    <button type="button" (click)="consultar()" [disabled]="cargando()">Consultar</button>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (rendimiento(); as r) {
+    <dl class="resultado">
+      <dt>Casos completados</dt>
+      <dd>{{ r.casosCompletados }}</dd>
+
+      <dt>Tiempo promedio por factura</dt>
+      <dd>{{ r.tiempoPromedioSegundos !== null ? (r.tiempoPromedioSegundos | number: '1.0-0') + ' s' : '—' }}</dd>
+
+      <dt>Ritmo esperado por hora</dt>
+      <dd>{{ r.ritmoEsperadoPorHora ?? '—' }}</dd>
+
+      <dt>Productividad real por hora</dt>
+      <dd>{{ r.productividadRealPorHora !== null ? (r.productividadRealPorHora | number: '1.1-1') : '—' }}</dd>
+
+      <dt>Cumplimiento</dt>
+      <dd>{{ r.cumplimientoPct !== null ? (r.cumplimientoPct | number: '1.0-0') + '%' : '—' }}</dd>
+
+      <dt>Manuales / Automáticas</dt>
+      <dd>{{ r.facturasManuales }} / {{ r.facturasAutomaticas }}</dd>
+
+      <dt>Horas extra necesarias</dt>
+      <dd>{{ r.horasExtraNecesarias !== null ? (r.horasExtraNecesarias | number: '1.1-1') : '—' }}</dd>
+    </dl>
+  }
+</section>

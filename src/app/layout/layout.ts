@@ -13,6 +13,7 @@ interface MenuItem {
 const MENU_ITEMS: MenuItem[] = [
   { label: 'Inicio', path: '' },
   { label: 'Facturas', path: 'facturas' },
+  { label: 'Productividad', path: 'facturas/productividad' },
   { label: 'Permisos', path: 'permisos' },
   { label: 'Administración', path: 'admin', roles: ['ADMIN'] },
 ];
