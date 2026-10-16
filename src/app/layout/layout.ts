@@ -23,7 +23,16 @@ const MENU_ITEMS: MenuItem[] = [
     ],
   },
   { label: 'Permisos', path: 'permisos' },
-  { label: 'Administración', path: 'admin', roles: ['ADMIN'] },
+  {
+    label: 'Administración',
+    path: 'admin',
+    roles: ['ADMIN'],
+    children: [
+      { label: 'Usuarios', path: 'admin/usuarios' },
+      { label: 'Equipos', path: 'admin/equipos' },
+      { label: 'Procesos', path: 'admin/procesos' },
+    ],
+  },
 ];
 
 /** Shell de la app autenticada: topbar + menú lateral (con submenús) filtrado por rol + <router-outlet>. */

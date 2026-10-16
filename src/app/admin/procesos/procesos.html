@@ -1,0 +1,99 @@
+<h2>Procesos</h2>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+<section class="card">
+  <h3>Crear proceso</h3>
+  <form [formGroup]="formCrear" (ngSubmit)="crear()">
+    <label>
+      Nombre
+      <input type="text" formControlName="nombre" />
+    </label>
+    <button type="submit" [disabled]="cargando()">Crear</button>
+  </form>
+</section>
+
+<section class="card ancho">
+  <h3>Procesos existentes</h3>
+  <p class="hint">
+    Acá se configura la meta diaria y el ritmo esperado por hora de cada proceso. La
+    productividad real, el cumplimiento y las horas extra necesarias según esa productividad son
+    datos en vivo — se consultan en <strong>Facturas → Productividad</strong>, no se configuran acá.
+  </p>
+
+  @for (proceso of procesos(); track proceso.id; let i = $index) {
+    <div class="proceso">
+      <form [formGroup]="fila(i)" class="fila-principal" (ngSubmit)="guardar(i)">
+        <label>
+          Nombre
+          <input type="text" formControlName="nombre" />
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" formControlName="activo" />
+          Activo
+        </label>
+        <button type="submit">Guardar</button>
+        <button type="button" (click)="toggleMeta(proceso.id)">
+          {{ procesoExpandidoId() === proceso.id ? 'Cerrar meta' : 'Configurar meta' }}
+        </button>
+      </form>
+
+      @if (procesoExpandidoId() === proceso.id) {
+        <div class="meta-config">
+          <form [formGroup]="formMeta" (ngSubmit)="guardarMeta()">
+            <label>
+              Año
+              <input type="number" formControlName="anio" />
+            </label>
+            <label>
+              Mes (1-12)
+              <input type="number" formControlName="mes" />
+            </label>
+            <label>
+              Meta diaria por persona
+              <input type="number" formControlName="metaDiariaPorPersona" />
+            </label>
+            <label>
+              Días hábiles del mes
+              <input type="number" formControlName="diasHabiles" />
+            </label>
+            <label>
+              Horas laborales por día
+              <input type="number" formControlName="horasLaboralesDia" />
+            </label>
+            <button type="submit">Guardar meta</button>
+          </form>
+
+          @if (metasDe(proceso.id).length > 0) {
+            <table>
+              <thead>
+                <tr>
+                  <th>Mes</th>
+                  <th>Meta diaria/persona</th>
+                  <th>Días hábiles</th>
+                  <th>Meta mensual/persona</th>
+                  <th>Ritmo esperado/hora</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (meta of metasDe(proceso.id); track meta.id) {
+                  <tr>
+                    <td>{{ meta.mes }}/{{ meta.anio }}</td>
+                    <td>{{ meta.metaDiariaPorPersona }}</td>
+                    <td>{{ meta.diasHabiles }}</td>
+                    <td>{{ meta.metaMensualPorPersona }}</td>
+                    <td>{{ meta.ritmoEsperadoPorHora }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="hint">Todavía no hay metas configuradas para este proceso.</p>
+          }
+        </div>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,94 @@
+<h2>Usuarios</h2>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+<section class="card">
+  <h3>Crear usuario</h3>
+  <form [formGroup]="formCrear" (ngSubmit)="crear()">
+    <label>
+      Nombre
+      <input type="text" formControlName="nombre" />
+    </label>
+    <label>
+      Email
+      <input type="email" formControlName="email" />
+    </label>
+    <label>
+      Contraseña inicial
+      <input type="password" formControlName="password" />
+    </label>
+    <label>
+      Rol
+      <select formControlName="rol">
+        @for (rol of roles; track rol) {
+          <option [value]="rol">{{ rol }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Equipo
+      <select formControlName="equipoId">
+        <option [ngValue]="null">Sin equipo</option>
+        @for (equipo of equipos(); track equipo.id) {
+          <option [ngValue]="equipo.id">{{ equipo.nombre }}</option>
+        }
+      </select>
+    </label>
+    <button type="submit" [disabled]="cargando()">Crear</button>
+  </form>
+</section>
+
+<section class="card ancho">
+  <h3>Usuarios existentes</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Equipo</th>
+        <th>Activo</th>
+        <th>Nueva contraseña</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (usuario of usuarios(); track usuario.id; let i = $index) {
+        <tr [formGroup]="fila(i)">
+          <td><input type="text" formControlName="nombre" /></td>
+          <td>{{ usuario.email }}</td>
+          <td>
+            <select formControlName="rol">
+              @for (rol of roles; track rol) {
+                <option [value]="rol">{{ rol }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select formControlName="equipoId">
+              <option [ngValue]="null">Sin equipo</option>
+              @for (equipo of equipos(); track equipo.id) {
+                <option [ngValue]="equipo.id">{{ equipo.nombre }}</option>
+              }
+            </select>
+          </td>
+          <td><input type="checkbox" formControlName="activo" /></td>
+          <td>
+            <input
+              type="password"
+              placeholder="Nueva contraseña"
+              [value]="passwordPara(usuario.id)"
+              (input)="onPasswordChange(usuario.id, $event)"
+            />
+          </td>
+          <td class="acciones">
+            <button type="button" (click)="guardar(i)">Guardar</button>
+            <button type="button" (click)="cambiarPassword(usuario.id)">Cambiar clave</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

@@ -1,0 +1,60 @@
+<h2>Equipos</h2>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+<section class="card">
+  <h3>Crear equipo</h3>
+  <form [formGroup]="formCrear" (ngSubmit)="crear()">
+    <label>
+      Nombre
+      <input type="text" formControlName="nombre" />
+    </label>
+    <label>
+      Jefe inmediato
+      <select formControlName="jefeInmediatoId">
+        <option [ngValue]="null">Sin asignar</option>
+        @for (jefe of jefesDisponibles(); track jefe.id) {
+          <option [ngValue]="jefe.id">{{ jefe.nombre }}</option>
+        }
+      </select>
+    </label>
+    <button type="submit" [disabled]="cargando()">Crear</button>
+  </form>
+  <p class="hint">
+    Solo aparecen acá los usuarios con rol JEFE_INMEDIATO — si falta alguno, asignale ese rol
+    primero en Usuarios.
+  </p>
+</section>
+
+<section class="card ancho">
+  <h3>Equipos existentes</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Jefe inmediato</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (equipo of equipos(); track equipo.id; let i = $index) {
+        <tr [formGroup]="fila(i)">
+          <td><input type="text" formControlName="nombre" /></td>
+          <td>
+            <select formControlName="jefeInmediatoId">
+              <option [ngValue]="null">Sin asignar</option>
+              @for (jefe of jefesDisponibles(); track jefe.id) {
+                <option [ngValue]="jefe.id">{{ jefe.nombre }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <button type="button" (click)="guardar(i)">Guardar</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

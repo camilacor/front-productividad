@@ -17,10 +17,21 @@ export const routes: Routes = [
         loadComponent: () => import('./facturas/productividad/productividad').then((m) => m.Productividad),
       },
       { path: 'permisos', loadComponent: () => import('./permisos/permisos').then((m) => m.Permisos) },
+      { path: 'admin', pathMatch: 'full', redirectTo: 'admin/usuarios' },
       {
-        path: 'admin',
+        path: 'admin/usuarios',
         canActivate: [roleGuard('ADMIN')],
-        loadComponent: () => import('./admin/admin').then((m) => m.Admin),
+        loadComponent: () => import('./admin/usuarios/usuarios').then((m) => m.Usuarios),
+      },
+      {
+        path: 'admin/equipos',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () => import('./admin/equipos/equipos').then((m) => m.Equipos),
+      },
+      {
+        path: 'admin/procesos',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () => import('./admin/procesos/procesos').then((m) => m.Procesos),
       },
     ],
   },

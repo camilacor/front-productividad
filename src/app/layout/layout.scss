@@ -83,5 +83,9 @@
 
 .content {
   flex: 1;
+  // Sin esto, un hijo ancho (p. ej. una tabla con overflow-x: auto) no se achica — por default
+  // un item flex no se encoge más allá del tamaño de su contenido, así que en vez de scrollear
+  // adentro de la tabla, empuja toda la página. Bug clásico de flexbox.
+  min-width: 0;
   padding: 1.5rem;
 }
