@@ -10,13 +10,22 @@
   <div class="body">
     <nav class="sidebar">
       @for (item of menuItems(); track item.path) {
-        <a
-          [routerLink]="item.path"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: item.path === '' }"
-        >
-          {{ item.label }}
-        </a>
+        @if (item.children) {
+          <span class="group-label">{{ item.label }}</span>
+          @for (child of item.children; track child.path) {
+            <a class="submenu-link" [routerLink]="child.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              {{ child.label }}
+            </a>
+          }
+        } @else {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: item.path === '' }"
+          >
+            {{ item.label }}
+          </a>
+        }
       }
     </nav>
 

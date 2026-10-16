@@ -3,6 +3,7 @@ import {
   inject,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
@@ -14,6 +15,11 @@ import { AuthService } from './core/services/auth.service';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    // No hay zone.js como dependencia (ng new ya no lo agrega por default) — sin este provider
+    // explícito, Angular no tiene ningún mecanismo garantizado para enterarse de que debe
+    // re-renderizar tras un signal.set() que no se originó en un evento que Angular maneje
+    // directamente (p. ej. un setInterval nativo, como el cronómetro de Casos).
+    provideZonelessChangeDetection(),
     provideRouter(routes),
     // El soporte CSRF integrado de Angular (withXsrfConfiguration) solo adjunta el header en URLs
     // relativas — no sirve acá porque environment.apiUrl es absoluta (otro origen a propósito).

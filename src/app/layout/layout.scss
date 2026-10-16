@@ -65,6 +65,20 @@
       font-weight: 600;
     }
   }
+
+  .group-label {
+    padding: 0.6rem 1.25rem 0.2rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  .submenu-link {
+    padding: 0.5rem 1.25rem 0.5rem 2.25rem;
+    font-size: 0.85rem;
+  }
 }
 
 .content {
