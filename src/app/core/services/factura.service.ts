@@ -41,11 +41,25 @@ export class FacturaService {
   }
 
   /**
-   * URL del .xlsx (Diaria/Semanal/Mensual) — se usa en un link de navegación de página completa,
-   * no por HttpClient: así la cookie de sesión viaja sola (SameSite=Lax) sin pelear con
-   * CORS/blobs solo para descargar un archivo (mismo patrón que la exportación CSV de permisos).
+   * URL del .xlsx — se usa en un link de navegación de página completa, no por HttpClient: así la
+   * cookie de sesión viaja sola (SameSite=Lax) sin pelear con CORS/blobs solo para descargar un
+   * archivo (mismo patrón que la exportación CSV de permisos).
+   *
+   * Sin `procesoId` el backend incluye todos los procesos (una hoja — o tres — por cada uno). Sin
+   * `desde`/`hasta` usa las 3 hojas de siempre (Diaria/Semanal/Mensual a hoy); con ambos, exporta
+   * ese rango puntual en una sola hoja por proceso. Las fechas son `yyyy-MM-dd` (de un `<input
+   * type="date">`) y acá se convierten al rango de instantes que espera el backend.
    */
-  exportarRendimientoUrl(procesoId: number): string {
-    return `${environment.apiUrl}/facturas/rendimiento-por-empleado/exportar?procesoId=${procesoId}`;
+  exportarRendimientoUrl(opciones: { procesoId?: number | null; desde?: string | null; hasta?: string | null }): string {
+    const params = new URLSearchParams();
+    if (opciones.procesoId) {
+      params.set('procesoId', String(opciones.procesoId));
+    }
+    if (opciones.desde && opciones.hasta) {
+      params.set('desde', new Date(`${opciones.desde}T00:00:00`).toISOString());
+      params.set('hasta', new Date(`${opciones.hasta}T23:59:59.999`).toISOString());
+    }
+    const query = params.toString();
+    return `${environment.apiUrl}/facturas/rendimiento-por-empleado/exportar${query ? '?' + query : ''}`;
   }
 }

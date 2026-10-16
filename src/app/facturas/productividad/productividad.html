@@ -51,10 +51,34 @@
   <section class="card ancho">
     <div class="encabezado-empleados">
       <h3>Por empleado</h3>
-      @if (exportarUrl(); as url) {
-        <a [href]="url" target="_blank" class="boton-exportar">Descargar Excel (día/semana/mes)</a>
+    </div>
+
+    <div class="exportar">
+      <label class="checkbox">
+        <input type="checkbox" [checked]="exportarTodosProcesos()" (change)="onTodosProcesosChange($event)" />
+        Todos los procesos
+      </label>
+
+      <label>
+        Desde
+        <input type="date" [value]="exportarDesde() ?? ''" (change)="onExportarDesdeChange($event)" />
+      </label>
+
+      <label>
+        Hasta
+        <input type="date" [value]="exportarHasta() ?? ''" (change)="onExportarHastaChange($event)" />
+      </label>
+
+      @if (puedeExportar()) {
+        <a [href]="exportarUrl()" target="_blank" class="boton-exportar">Descargar Excel</a>
+      } @else {
+        <span class="boton-exportar deshabilitado">Descargar Excel</span>
       }
     </div>
+    <p class="hint">
+      Sin fechas, descarga día/semana/mes de hoy. Con "Todos los procesos" sin seleccionar uno arriba, incluye
+      una hoja por proceso.
+    </p>
 
     @if (rendimientoPorEmpleado(); as r) {
       @if (r.empleados.length === 0) {

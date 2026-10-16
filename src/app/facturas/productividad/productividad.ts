@@ -32,6 +32,19 @@ export class Productividad {
   readonly puedeVerPorEmpleado = computed(() => this.authService.usuario()?.rol !== 'EMPLEADO');
   readonly rendimientoPorEmpleado = signal<RendimientoPorEmpleado | null>(null);
 
+  // Exportación: proceso puntual (o todos) y, opcionalmente, un rango de fechas propio en vez del
+  // día/semana/mes fijo — ver FacturaController.exportarRendimientoPorEmpleado en el backend.
+  readonly exportarTodosProcesos = signal(false);
+  readonly exportarDesde = signal<string | null>(null);
+  readonly exportarHasta = signal<string | null>(null);
+
+  readonly puedeExportar = computed(() => {
+    const procesoElegido = this.exportarTodosProcesos() || this.procesoSeleccionadoId() !== null;
+    const rangoValido =
+      (!this.exportarDesde() && !this.exportarHasta()) || (!!this.exportarDesde() && !!this.exportarHasta());
+    return procesoElegido && rangoValido;
+  });
+
   constructor() {
     this.procesoService.listar().subscribe((procesos) => this.procesos.set(procesos));
   }
@@ -41,9 +54,25 @@ export class Productividad {
     this.procesoSeleccionadoId.set(value ? Number(value) : null);
   }
 
-  exportarUrl(): string | null {
-    const procesoId = this.procesoSeleccionadoId();
-    return procesoId ? this.facturaService.exportarRendimientoUrl(procesoId) : null;
+  exportarUrl(): string {
+    const procesoId = this.exportarTodosProcesos() ? null : this.procesoSeleccionadoId();
+    return this.facturaService.exportarRendimientoUrl({
+      procesoId,
+      desde: this.exportarDesde(),
+      hasta: this.exportarHasta(),
+    });
+  }
+
+  onTodosProcesosChange(event: Event): void {
+    this.exportarTodosProcesos.set((event.target as HTMLInputElement).checked);
+  }
+
+  onExportarDesdeChange(event: Event): void {
+    this.exportarDesde.set((event.target as HTMLInputElement).value || null);
+  }
+
+  onExportarHastaChange(event: Event): void {
+    this.exportarHasta.set((event.target as HTMLInputElement).value || null);
   }
 
   consultar(): void {
