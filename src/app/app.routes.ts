@@ -11,10 +11,16 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/layout').then((m) => m.Layout),
     children: [
       { path: '', loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard) },
-      { path: 'facturas', loadComponent: () => import('./facturas/facturas').then((m) => m.Facturas) },
       {
-        path: 'facturas/productividad',
-        loadComponent: () => import('./facturas/productividad/productividad').then((m) => m.Productividad),
+        path: 'facturas',
+        loadComponent: () => import('./facturas/facturas-shell').then((m) => m.FacturasShell),
+        children: [
+          { path: '', loadComponent: () => import('./facturas/casos/casos').then((m) => m.Casos) },
+          {
+            path: 'productividad',
+            loadComponent: () => import('./facturas/productividad/productividad').then((m) => m.Productividad),
+          },
+        ],
       },
       { path: 'permisos', loadComponent: () => import('./permisos/permisos').then((m) => m.Permisos) },
       {

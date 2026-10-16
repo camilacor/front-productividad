@@ -2,19 +2,19 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { interval } from 'rxjs';
-import { CasoFactura, TipoGeneracion } from '../core/models/caso-factura.model';
-import { Proceso } from '../core/models/proceso.model';
-import { FacturaService } from '../core/services/factura.service';
-import { ProcesoService } from '../core/services/proceso.service';
+import { CasoFactura, TipoGeneracion } from '../../core/models/caso-factura.model';
+import { Proceso } from '../../core/models/proceso.model';
+import { FacturaService } from '../../core/services/factura.service';
+import { ProcesoService } from '../../core/services/proceso.service';
 
-/** Iniciar/finalizar un caso de factura. La consulta de rendimiento vive aparte, en Productividad. */
+/** Iniciar/finalizar un caso de factura — pestaña "Casos" dentro de Facturas (ver facturas-shell). */
 @Component({
-  selector: 'app-facturas',
+  selector: 'app-casos',
   imports: [ReactiveFormsModule],
-  templateUrl: './facturas.html',
-  styleUrl: './facturas.scss',
+  templateUrl: './casos.html',
+  styleUrl: './casos.scss',
 })
-export class Facturas {
+export class Casos {
   private readonly procesoService = inject(ProcesoService);
   private readonly facturaService = inject(FacturaService);
   private readonly fb = inject(FormBuilder);

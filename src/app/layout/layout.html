@@ -13,7 +13,7 @@
         <a
           [routerLink]="item.path"
           routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLinkActiveOptions]="{ exact: item.path === '' }"
         >
           {{ item.label }}
         </a>
