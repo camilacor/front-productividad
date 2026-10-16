@@ -27,7 +27,7 @@ export class Productividad {
   readonly cargando = signal(false);
   readonly error = signal<string | null>(null);
 
-  // La "visual de todos los empleados" — el backend ya la restringe a roles != EMPLEADO, acá solo
+  // La "visual de todos los empleados" — el backend ya la restringe a roles != EMPLEADO, aquí solo
   // evitamos pedirla (y mostrar una sección vacía) para alguien que de entrada no la puede ver.
   readonly puedeVerPorEmpleado = computed(() => this.authService.usuario()?.rol !== 'EMPLEADO');
   readonly rendimientoPorEmpleado = signal<RendimientoPorEmpleado | null>(null);

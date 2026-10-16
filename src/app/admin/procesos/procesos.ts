@@ -5,7 +5,7 @@ import { Proceso } from '../../core/models/proceso.model';
 import { ProcesoService } from '../../core/services/proceso.service';
 
 /**
- * Configuración de procesos y su meta mensual — "muy importante sobre facturación": acá se
+ * Configuración de procesos y su meta mensual — "muy importante sobre facturación": aquí se
  * configura el ritmo esperado por hora y la cantidad de facturas esperada (cumplimiento) por
  * proceso. La productividad REAL y las horas extra necesarias según esa productividad son datos
  * en vivo, no algo que se configure — se ven en Facturas → Productividad (ver hint abajo).

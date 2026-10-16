@@ -19,7 +19,7 @@ export class Equipos {
 
   readonly equipos = signal<Equipo[]>([]);
   readonly usuarios = signal<Usuario[]>([]);
-  // El backend exige que el jefeInmediato de un equipo tenga rol JEFE_INMEDIATO — se filtra acá
+  // El backend exige que el jefeInmediato de un equipo tenga rol JEFE_INMEDIATO — se filtra aquí
   // para no dejar elegir a alguien que el backend va a rechazar con 409.
   readonly jefesDisponibles = computed(() => this.usuarios().filter((u) => u.rol === 'JEFE_INMEDIATO'));
 

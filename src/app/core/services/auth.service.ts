@@ -6,7 +6,7 @@ import { Usuario } from '../models/usuario.model';
 
 /**
  * Espeja los endpoints de `com.productividad.auth.AuthController` (ver docs/seguridad.md del
- * backend). El JWT nunca llega acá — vive en una cookie HttpOnly que el navegador maneja solo;
+ * backend). El JWT nunca llega aquí — vive en una cookie HttpOnly que el navegador maneja solo;
  * este servicio únicamente guarda el `Usuario` que el backend devuelve en el body.
  */
 @Injectable({ providedIn: 'root' })

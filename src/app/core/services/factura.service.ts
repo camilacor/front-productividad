@@ -76,7 +76,7 @@ export class FacturaService {
    * Sin `procesoId` el backend incluye todos los procesos (una hoja — o tres — por cada uno). Sin
    * `desde`/`hasta` usa las 3 hojas de siempre (Diaria/Semanal/Mensual a hoy); con ambos, exporta
    * ese rango puntual en una sola hoja por proceso. Con `usuarioId`, cada hoja trae solo esa
-   * persona. Las fechas son `yyyy-MM-dd` (de un `<input type="date">`) y acá se convierten al
+   * persona. Las fechas son `yyyy-MM-dd` (de un `<input type="date">`) y aquí se convierten al
    * rango de instantes que espera el backend.
    */
   exportarRendimientoUrl(opciones: {

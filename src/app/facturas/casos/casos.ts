@@ -28,7 +28,7 @@ export class Casos {
   readonly cargando = signal(false);
   readonly error = signal<string | null>(null);
 
-  // Reloj en vivo del caso en curso. Nada de toSignal(interval(...)) acá: con setInterval directo
+  // Reloj en vivo del caso en curso. Nada de toSignal(interval(...)) aquí: con setInterval directo
   // sobre un signal no hay ninguna duda de que cada tick dispare change detection (toSignal sobre
   // un Observable de rxjs quedó, en la práctica, sin actualizar la vista mientras el componente
   // seguía montado).

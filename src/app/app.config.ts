@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     // El soporte CSRF integrado de Angular (withXsrfConfiguration) solo adjunta el header en URLs
-    // relativas — no sirve acá porque environment.apiUrl es absoluta (otro origen a propósito).
+    // relativas — no sirve aquí porque environment.apiUrl es absoluta (otro origen a propósito).
     // credentialsInterceptor hace ese trabajo a mano, ver sus comentarios.
     provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor])),
     // Al arrancar la app: calienta la cookie CSRF y, si ya hay una sesión válida (cookie

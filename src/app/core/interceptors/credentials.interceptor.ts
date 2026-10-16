@@ -11,10 +11,10 @@ const METODOS_MUTANTES = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
  * El backend vive en otro origen (distinto puerto) y la auth depende de una cookie HttpOnly
  * (ver docs/seguridad.md del backend) — sin `withCredentials: true` el navegador ni manda la
  * cookie de sesión en el request, ni guarda el `Set-Cookie` de la respuesta de /login. Angular
- * no tiene un `provideHttpClient` para esto por default; se fuerza acá para todas las llamadas al
+ * no tiene un `provideHttpClient` para esto por default; se fuerza aquí para todas las llamadas al
  * backend, así cada servicio no tiene que acordarse de ponerlo.
  *
- * También se adjunta acá el header CSRF a mano: el interceptor que trae Angular
+ * También se adjunta aquí el header CSRF a mano: el interceptor que trae Angular
  * (`withXsrfConfiguration`) solo lo adjunta en URLs *relativas* (las trata como mismo origen); como
  * `environment.apiUrl` es una URL absoluta a otro origen a propósito, Angular nunca manda el
  * header y el backend rechaza cualquier POST/PUT/PATCH/DELETE con 403 "No autorizado" — excepto
