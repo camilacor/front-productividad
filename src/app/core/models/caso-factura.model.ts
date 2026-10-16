@@ -47,3 +47,9 @@ export interface RendimientoPorEmpleado {
   ritmoEsperadoPorHora: number | null;
   empleados: RendimientoEmpleado[];
 }
+
+/** Espejo de EmpleadoResponse — opción mínima para el filtro de empleado, sin depender de un proceso. */
+export interface Empleado {
+  id: number;
+  nombre: string;
+}

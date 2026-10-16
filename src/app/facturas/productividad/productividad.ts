@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RendimientoPorEmpleado, RendimientoProceso } from '../../core/models/caso-factura.model';
+import { Empleado, RendimientoPorEmpleado, RendimientoProceso } from '../../core/models/caso-factura.model';
 import { Proceso } from '../../core/models/proceso.model';
 import { AuthService } from '../../core/services/auth.service';
 import { FacturaService } from '../../core/services/factura.service';
@@ -32,8 +32,20 @@ export class Productividad {
   readonly puedeVerPorEmpleado = computed(() => this.authService.usuario()?.rol !== 'EMPLEADO');
   readonly rendimientoPorEmpleado = signal<RendimientoPorEmpleado | null>(null);
 
+  // Rango de fechas propio para Consultar — si se completan ambas fechas, reemplazan los botones
+  // Hoy/Esta semana/Este mes.
+  readonly rangoDesde = signal<string | null>(null);
+  readonly rangoHasta = signal<string | null>(null);
+
+  // Filtro por empleado puntual: la lista sale de /facturas/empleados (todos los usuarios),
+  // independiente del proceso consultado — así "todos los procesos" se puede combinar con un
+  // empleado puntual sin que dependa de que esa persona haya salido en la última consulta.
+  readonly empleadosDisponibles = signal<Empleado[]>([]);
+  readonly empleadoSeleccionadoId = signal<number | null>(null);
+
   // Exportación: proceso puntual (o todos) y, opcionalmente, un rango de fechas propio en vez del
-  // día/semana/mes fijo — ver FacturaController.exportarRendimientoPorEmpleado en el backend.
+  // día/semana/mes fijo — ver FacturaController.exportarRendimientoPorEmpleado en el backend. El
+  // filtro de empleado se comparte con la consulta en pantalla (empleadoSeleccionadoId).
   readonly exportarTodosProcesos = signal(false);
   readonly exportarDesde = signal<string | null>(null);
   readonly exportarHasta = signal<string | null>(null);
@@ -47,6 +59,9 @@ export class Productividad {
 
   constructor() {
     this.procesoService.listar().subscribe((procesos) => this.procesos.set(procesos));
+    if (this.puedeVerPorEmpleado()) {
+      this.facturaService.listarEmpleados().subscribe((empleados) => this.empleadosDisponibles.set(empleados));
+    }
   }
 
   onProcesoChange(event: Event): void {
@@ -60,7 +75,21 @@ export class Productividad {
       procesoId,
       desde: this.exportarDesde(),
       hasta: this.exportarHasta(),
+      usuarioId: this.empleadoSeleccionadoId(),
     });
+  }
+
+  onRangoDesdeChange(event: Event): void {
+    this.rangoDesde.set((event.target as HTMLInputElement).value || null);
+  }
+
+  onRangoHastaChange(event: Event): void {
+    this.rangoHasta.set((event.target as HTMLInputElement).value || null);
+  }
+
+  onEmpleadoChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.empleadoSeleccionadoId.set(value ? Number(value) : null);
   }
 
   onTodosProcesosChange(event: Event): void {
@@ -83,9 +112,10 @@ export class Productividad {
     }
     this.error.set(null);
     this.cargando.set(true);
-    const { desde, hasta } = this.rangoPeriodo(this.periodo());
+    const { desde, hasta } = this.rangoConsulta();
+    const usuarioId = this.empleadoSeleccionadoId();
 
-    this.facturaService.rendimiento(procesoId, desde, hasta).subscribe({
+    this.facturaService.rendimiento(procesoId, desde, hasta, usuarioId).subscribe({
       next: (resultado) => {
         this.rendimiento.set(resultado);
         this.cargando.set(false);
@@ -97,11 +127,23 @@ export class Productividad {
     });
 
     if (this.puedeVerPorEmpleado()) {
-      this.facturaService.rendimientoPorEmpleado(procesoId, desde, hasta).subscribe({
+      this.facturaService.rendimientoPorEmpleado(procesoId, desde, hasta, usuarioId).subscribe({
         next: (resultado) => this.rendimientoPorEmpleado.set(resultado),
         error: () => this.rendimientoPorEmpleado.set(null),
       });
     }
+  }
+
+  private rangoConsulta(): { desde: string; hasta: string } {
+    const desde = this.rangoDesde();
+    const hasta = this.rangoHasta();
+    if (desde && hasta) {
+      return {
+        desde: new Date(`${desde}T00:00:00`).toISOString(),
+        hasta: new Date(`${hasta}T23:59:59.999`).toISOString(),
+      };
+    }
+    return this.rangoPeriodo(this.periodo());
   }
 
   private rangoPeriodo(periodo: Periodo): { desde: string; hasta: string } {
